@@ -66,6 +66,24 @@ test('should successfully detect a remembered funding source in the request', ()
     }
 });
 
+test('should successfully detect a remembered funding source in the cookie overrides', () => {
+    const req = getMockReq();
+
+    const cookieOverride = {
+        js_sdk: JSON.stringify({
+            funding: {
+                [ FUNDING.VENMO ]: {
+                    remembered: true
+                }
+            }
+        })
+    };
+
+    if (!isFundingRemembered(req, FUNDING.VENMO, cookieOverride)) {
+        throw new Error(`Expected ${ FUNDING.VENMO } to be remembered`);
+    }
+});
+
 test('should successfully detect a remembered funding source in the request from a legacy cookie', () => {
     const req = getMockReq({
         cookies: {
