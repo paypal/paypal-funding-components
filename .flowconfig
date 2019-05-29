@@ -1,0 +1,20 @@
+[ignore]
+.*/node_modules/babel-plugin-flow-runtime
+.*/node_modules/flow-runtime
+.*/node_modules/cross-domain-safe-weakmap/dist
+.*/node_modules/cross-domain-safe-weakmap/test
+.*/node_modules/cross-domain-utils/dist
+.*/node_modules/cross-domain-utils/test
+.*/node_modules/npm
+.*/node_modules/jsonlint
+.*/dist/module
+[include]
+[libs]
+flow-typed
+src/declarations.js
+node_modules/grumbler-scripts/declarations.js
+node_modules/@paypal/sdk-client/src/declarations.js
+[options]
+module.name_mapper='^src\(.*\)$' -> '<PROJECT_ROOT>/src/\1'
+esproposal.export_star_as=enable
+esproposal.decorators=ignore
