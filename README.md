@@ -17,7 +17,7 @@ paypal.rememberFunding([ paypal.FUNDING.VENMO ]);
 import { rememberFunding } from '@paypal/funding-components';
 import { FUNDING } from '@paypal/sdk-constants';
 
-rememberFunding([ FUNDING.VENMO ]);
+rememberFunding(req, res, [ FUNDING.VENMO ]);
 ```
 
 ## Check a remembered funding source from the server-side
@@ -26,10 +26,17 @@ rememberFunding([ FUNDING.VENMO ]);
 import { isFundingRemembered } from '@paypal/funding-components';
 import { FUNDING } from '@paypal/sdk-constants';
 
-if (isFundingRemembered(FUNDING.VENMO)) {
+if (isFundingRemembered(req, FUNDING.VENMO)) {
     // ...
 }
 ```
+
+Pass in a custom set of cookies:
+
+```javascript
+isFundingRemembered(req, FUNDING.VENMO, cookies)
+```
+
 
 Quick Start
 -----------
