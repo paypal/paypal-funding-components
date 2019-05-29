@@ -1,10 +1,12 @@
 /* @flow */
 
-import type { ExpressRequest, ExpressResponse } from './types';
+// eslint-disable-next-line import/no-nodejs-modules
+import crypto from 'crypto';
 
-export function getNonce(res : ExpressResponse) : string {
-    const nonce = res.locals && res.locals.nonce;
-    return (nonce && typeof nonce === 'string') ? nonce : '';
+import type { ExpressRequest } from './types';
+
+export function getNonce() : string {
+    return crypto.randomBytes(16).toString('base64');
 }
 
 export function getQuery(req : ExpressRequest) : { [string] : string }  {

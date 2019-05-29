@@ -52,14 +52,13 @@ function parseFundingSources(commaSeparatedFundingSources) : $ReadOnlyArray<$Val
     return fundingSources;
 }
 
-function setSecurityHeaders(res : ExpressResponse, { domain } : { domain : string }) {
+function setSecurityHeaders(res : ExpressResponse, { nonce, domain } : { nonce : string, domain : string }) {
     res.setHeader(HTTP_RESPONSE_HEADER.CONTENT_SECURITY_POLICY, buildCSP({
-        'script-src':      `'self' https://*.paypal.com:*`,
-        'connect-src':     `'self' https://*.paypal.com:*`,
-        'base-src':        `'self' https://*.paypal.com:*`,
+        'script-src':      `'self' nonce-${ nonce }`,
+        'connect-src':     `'self'`,
+        'img-src':         `'self'`,
         'frame-ancestors': `${ domain }`,
         'style-src':       `'none'`,
-        'img-src':         `'none'`,
         'frame-src':       `'none'`,
         'font-src':        `'none'`,
         'object-src':      `'none'`,
@@ -128,10 +127,10 @@ export function rememberFundingIframe({ allowedClients = {} } : RememberFundingO
 
         rememberFunding(req, res, fundingSources);
 
-        const nonce = getNonce(res);
+        const nonce = getNonce();
         const { getSDKLoader } = meta;
 
-        setSecurityHeaders(res, { domain });
+        setSecurityHeaders(res, { domain, nonce });
 
         res.status(200).send(`
             <!DOCTYPE html>
