@@ -9,14 +9,14 @@ import { getSDKCookie, writeSDKCookie, type CookiesType } from './cookie';
 import { getNonce, getQuery, buildCSP } from './util';
 import { LEGACY_COOKIES } from './config';
 
-export function isFundingRemembered(req : ExpressRequest, fundingSource : $Values<typeof FUNDING>, cookiesOverride? : CookiesType) : boolean {
-    const cookies = cookiesOverride || req.cookies || {};
+export function isFundingRemembered(req : ExpressRequest, fundingSource : $Values<typeof FUNDING>, opts? : { cookies? : CookiesType } = {}) : boolean {
+    const cookies = opts.cookies || req.cookies || {};
 
     if (LEGACY_COOKIES[fundingSource] && cookies[LEGACY_COOKIES[fundingSource]]) {
         return true;
     }
     
-    const sdkCookie = getSDKCookie(req, cookiesOverride);
+    const sdkCookie = getSDKCookie(req, cookies);
     const funding = sdkCookie.funding || {};
     const fundingConfig = funding[fundingSource] || {};
     return Boolean(fundingConfig.remembered);

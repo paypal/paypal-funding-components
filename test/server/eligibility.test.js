@@ -69,7 +69,7 @@ test('should successfully detect a remembered funding source in the request', ()
 test('should successfully detect a remembered funding source in the cookie overrides', () => {
     const req = getMockReq();
 
-    const cookieOverride = {
+    const cookies = {
         js_sdk: JSON.stringify({
             funding: {
                 [ FUNDING.VENMO ]: {
@@ -79,7 +79,7 @@ test('should successfully detect a remembered funding source in the cookie overr
         })
     };
 
-    if (!isFundingRemembered(req, FUNDING.VENMO, cookieOverride)) {
+    if (!isFundingRemembered(req, FUNDING.VENMO, { cookies })) {
         throw new Error(`Expected ${ FUNDING.VENMO } to be remembered`);
     }
 });

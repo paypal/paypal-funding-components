@@ -34,7 +34,7 @@ if (isFundingRemembered(req, FUNDING.VENMO)) {
 Pass in a custom set of cookies:
 
 ```javascript
-isFundingRemembered(req, FUNDING.VENMO, cookies)
+isFundingRemembered(req, FUNDING.VENMO, { cookies })
 ```
 
 
