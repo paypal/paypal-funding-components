@@ -6,7 +6,8 @@ import crypto from 'crypto';
 import type { ExpressRequest } from './types';
 
 export function getNonce() : string {
-    return crypto.randomBytes(16).toString('base64');
+    return crypto.randomBytes(16)
+        .toString('base64').replace(/[^a-zA-Z0-9]+/g, '');
 }
 
 export function getQuery(req : ExpressRequest) : { [string] : string }  {

@@ -54,10 +54,10 @@ function parseFundingSources(commaSeparatedFundingSources) : $ReadOnlyArray<$Val
 
 function setSecurityHeaders(res : ExpressResponse, { nonce, domain } : { nonce : string, domain : string }) {
     res.setHeader(HTTP_RESPONSE_HEADER.CONTENT_SECURITY_POLICY, buildCSP({
-        'script-src':      `'self' https://*.paypal.com:* nonce-${ nonce }`,
+        'script-src':      `'self' https://*.paypal.com:* 'nonce-${ nonce }'`,
         'connect-src':     `'self' https://*.paypal.com:*`,
         'frame-ancestors': `${ domain }`,
-        'img-src':         `'nonce'`,
+        'img-src':         `data:`,
         'style-src':       `'none'`,
         'frame-src':       `'none'`,
         'font-src':        `'none'`,
