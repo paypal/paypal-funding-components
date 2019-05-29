@@ -11,8 +11,9 @@ import { LEGACY_COOKIES } from './config';
 
 export function isFundingRemembered(req : ExpressRequest, fundingSource : $Values<typeof FUNDING>, opts? : { cookies? : CookiesType } = {}) : boolean {
     const cookies = opts.cookies || req.cookies || {};
+    const legacyCookie = LEGACY_COOKIES[fundingSource] || {};
 
-    if (LEGACY_COOKIES[fundingSource] && cookies[LEGACY_COOKIES[fundingSource]]) {
+    if (legacyCookie.read && cookies[legacyCookie.key]) {
         return true;
     }
     
@@ -25,13 +26,17 @@ export function isFundingRemembered(req : ExpressRequest, fundingSource : $Value
 export function rememberFunding(req : ExpressRequest, res : ExpressResponse, fundingSources : $ReadOnlyArray<$Values<typeof FUNDING>>) {
     const sdkCookie = getSDKCookie(req);
     const funding = sdkCookie.funding = sdkCookie.funding || {};
+
     for (const fundingSource of fundingSources) {
         funding[fundingSource] = sdkCookie.funding[fundingSource] || {};
         funding[fundingSource].remembered = true;
-        if (LEGACY_COOKIES[fundingSource]) {
-            res.cookie(LEGACY_COOKIES[fundingSource], '1');
+
+        const legacyCookie = LEGACY_COOKIES[fundingSource] || {};
+        if (legacyCookie.write) {
+            res.cookie(legacyCookie.key, '1');
         }
     }
+
     writeSDKCookie(res, sdkCookie);
 }
 
@@ -89,7 +94,7 @@ export function rememberFundingIframe({ allowedClients = {} } : RememberFundingO
             return res.status(400).send(`Expected ${ QUERY_PARAM.CLIENT_ID } query param`);
         }
 
-        if (!domain || !domain.match(/^https:\/\/[a-zA-Z_0-9.-]+$/)) {
+        if (!domain || !domain.match(/^https?:\/\/[a-zA-Z_0-9.-]+$/)) {
             return res.status(400).send(`Expected ${ QUERY_PARAM.DOMAIN } query param`);
         }
 
