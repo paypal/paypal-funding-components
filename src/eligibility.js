@@ -1,6 +1,6 @@
 /* @flow */
 
-import { getClientID, getSDKMeta, getPayPalDomain, isPayPalDomain } from '@paypal/sdk-client/src';
+import { getClientID, getSDKMeta, getPayPalDomain, isPayPalDomain, getStorageState } from '@paypal/sdk-client/src';
 import { FUNDING } from '@paypal/sdk-constants/src';
 import { values, extendUrl } from 'belter/src';
 import { getDomain } from 'cross-domain-utils/src';
@@ -30,8 +30,18 @@ function dropRememberFundingFrame(fundingSources : $ReadOnlyArray<$Values<typeof
     container.appendChild(frame);
 }
 
-export function rememberFunding(fundingSources : $ReadOnlyArray<$Values<typeof FUNDING>>) {
+type RememberFundingOpts = {|
+    cookie : boolean
+|};
+
+const getDefaultRememberFundingOpts = () : RememberFundingOpts => {
+    // $FlowFixMe
+    return {};
+};
+
+export function rememberFunding(fundingSources : $ReadOnlyArray<$Values<typeof FUNDING>>, opts? : RememberFundingOpts = getDefaultRememberFundingOpts()) {
     const validFunding = values(FUNDING);
+    const { cookie = true } = opts;
 
     if (!fundingSources || !fundingSources.length) {
         throw new Error(`Pass array of funding sources`);
@@ -43,7 +53,22 @@ export function rememberFunding(fundingSources : $ReadOnlyArray<$Values<typeof F
         }
     }
 
-    if (!isPayPalDomain()) {
+    if (cookie && !isPayPalDomain()) {
         dropRememberFundingFrame(fundingSources);
     }
+
+    getStorageState(storage => {
+        storage.rememberedFunding = storage.rememberedFunding || [];
+        for (const fundingSource of fundingSources) {
+            if (storage.rememberedFunding.indexOf(fundingSource) === -1) {
+                storage.rememberedFunding.push(fundingSource);
+            }
+        }
+    });
+}
+
+export function getRememberedFunding() : $ReadOnlyArray<$Values<typeof FUNDING>> {
+    return getStorageState(storage => {
+        return storage.rememberedFunding || [];
+    });
 }
