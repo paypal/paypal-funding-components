@@ -9,7 +9,7 @@
     "clean": "rimraf dist coverage",
     "debug": "cross-env NODE_ENV=debug",
     "flow": "flow",
-    "flow-typed": "rm -rf ./flow-typed && flow-typed install && flow-typed install express@4",
+    "flow-typed": "rm -rf ./flow-typed && flow-typed install && flow-typed install express@4.16 && sed -i -e 's/http$IncomingMessage/http$IncomingMessage<any>/g' ./flow-typed/npm/express_v4.16.x.js",
     "karma": "cross-env NODE_ENV=test babel-node --plugins=transform-es2015-modules-commonjs ./node_modules/.bin/karma start",
     "lint": "eslint src/ server/ test/ *.js",
     "reinstall": "rimraf flow-typed && rimraf node_modules && npm install && flow-typed install",
@@ -60,7 +60,7 @@
   "devDependencies": {
     "babel-core": "^7.0.0-bridge.0",
     "cheerio": "^1.0.0-rc.3",
-    "flow-bin": "^0.81.0",
+    "flow-bin": "^0.100.0",
     "grumbler-scripts": "^3",
     "mocha": "^4",
     "sync-browser-mocks": "^2.0.0"

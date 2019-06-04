@@ -8,6 +8,7 @@
 .*/node_modules/npm
 .*/node_modules/jsonlint
 .*/dist/module
+.*/flow-typed/npm/express_v4.x.x.js
 [include]
 [libs]
 flow-typed
@@ -18,3 +19,5 @@ node_modules/@paypal/sdk-client/src/declarations.js
 module.name_mapper='^src\(.*\)$' -> '<PROJECT_ROOT>/src/\1'
 esproposal.export_star_as=enable
 esproposal.decorators=ignore
+[lints]
+deprecated-utility=off
