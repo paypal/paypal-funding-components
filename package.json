@@ -9,7 +9,7 @@
     "clean": "rimraf dist coverage",
     "debug": "cross-env NODE_ENV=debug",
     "flow": "flow",
-    "flow-typed": "rm -rf ./flow-typed && flow-typed install && flow-typed install express@4.16 && sed -i -e 's/http$IncomingMessage/http$IncomingMessage<any>/g' ./flow-typed/npm/express_v4.16.x.js",
+    "flow-typed": "rm -rf ./flow-typed && flow-typed install && flow-typed install express@4.16 && sed -i -e 's/http$IncomingMessage,/http$IncomingMessage<>,/g' ./flow-typed/npm/express_v4.16.x.js",
     "karma": "cross-env NODE_ENV=test babel-node --plugins=transform-es2015-modules-commonjs ./node_modules/.bin/karma start",
     "lint": "eslint src/ server/ test/ *.js",
     "reinstall": "rimraf flow-typed && rimraf node_modules && npm install && flow-typed install",
