@@ -12,7 +12,8 @@ export type CookiesType = {
 type SDKCookie = {|
     funding? : {
         [ $Values<typeof FUNDING> ] : {|
-            remembered? : boolean
+            remembered? : boolean,
+            expiry? : number
         |}
     }
 |};

@@ -6,20 +6,25 @@ import { FUNDING } from '@paypal/sdk-constants';
 import type { ExpressRequest, ExpressResponse } from './types';
 import { QUERY_PARAM, HTTP_RESPONSE_HEADER } from './constants';
 import { getSDKCookie, writeSDKCookie, type CookiesType } from './cookie';
-import { getNonce, getQuery, buildCSP } from './util';
-import { LEGACY_COOKIES } from './config';
+import { getNonce, getQuery, buildCSP, getTimestamp } from './util';
+import { COOKIE_SETTINGS } from './config';
 
 export function isFundingRemembered(req : ExpressRequest, fundingSource : $Values<typeof FUNDING>, opts? : { cookies? : CookiesType } = {}) : boolean {
     const cookies = opts.cookies || req.cookies || {};
-    const legacyCookie = LEGACY_COOKIES[fundingSource] || {};
+    const cookieSettings = COOKIE_SETTINGS[fundingSource] || {};
 
-    if (legacyCookie.read && cookies[legacyCookie.key]) {
+    if (cookieSettings.legacyRead && cookieSettings.legacyKey && cookies[cookieSettings.legacyKey]) {
         return true;
     }
     
     const sdkCookie = getSDKCookie(req, cookies);
     const funding = sdkCookie.funding || {};
     const fundingConfig = funding[fundingSource] || {};
+    
+    if (fundingConfig.expiry && fundingConfig.expiry < getTimestamp()) {
+        return false;
+    }
+
     return Boolean(fundingConfig.remembered);
 }
 
@@ -28,12 +33,16 @@ export function rememberFunding(req : ExpressRequest, res : ExpressResponse, fun
     const funding = sdkCookie.funding = sdkCookie.funding || {};
 
     for (const fundingSource of fundingSources) {
-        funding[fundingSource] = sdkCookie.funding[fundingSource] || {};
-        funding[fundingSource].remembered = true;
+        const fundingConfig =  funding[fundingSource] = sdkCookie.funding[fundingSource] || {};
+        fundingConfig.remembered = true;
 
-        const legacyCookie = LEGACY_COOKIES[fundingSource] || {};
-        if (legacyCookie.write) {
-            res.cookie(legacyCookie.key, '1');
+        const cookieSettings = COOKIE_SETTINGS[fundingSource] || {};
+        if (cookieSettings.legacyWrite && cookieSettings.legacyKey) {
+            res.cookie(cookieSettings.legacyKey, '1');
+        }
+
+        if (cookieSettings.expiry) {
+            fundingConfig.expiry = (getTimestamp() + cookieSettings.expiry);
         }
     }
 

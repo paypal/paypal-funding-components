@@ -2,23 +2,27 @@
 
 import { FUNDING } from '@paypal/sdk-constants';
 
-type LegacyCookies = {
+type CookieSettings = {
     [$Values<typeof FUNDING>] : {|
-        key : string,
-        read : boolean,
-        write : boolean
+        legacyKey? : string,
+        legacyRead? : boolean,
+        legacyWrite? : boolean,
+        expiry? : number
     |}
 };
 
-export const LEGACY_COOKIES : LegacyCookies = {
+export const COOKIE_SETTINGS : CookieSettings = {
     [ FUNDING.PAYPAL ]: {
-        key:   'login_email',
-        read:  true,
-        write: false
+        legacyKey:   'login_email',
+        legacyRead:   true,
+        legacyWrite:  false
     },
     [ FUNDING.VENMO ]: {
-        key:   'pwv',
-        read:  true,
-        write: true
+        legacyKey:   'pwv',
+        legacyRead:  true,
+        legacyWrite: true
+    },
+    [ FUNDING.ITAU ]: {
+        expiry: 2 * 30 * 24 * 60 * 60
     }
 };

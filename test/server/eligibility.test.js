@@ -19,6 +19,23 @@ test('should successfully remember a funding source in the cookie', () => {
     }
 });
 
+test('should successfully remember a funding source in the cookie in a new request', () => {
+    const req = getMockReq();
+    const res = getMockRes();
+
+    rememberFunding(req, res, [ FUNDING.VENMO ]);
+
+    const newReq = getMockReq({
+        cookies: {
+            js_sdk: res.cookies.js_sdk
+        }
+    });
+
+    if (!isFundingRemembered(newReq, FUNDING.VENMO)) {
+        throw new Error(`Expected ${ FUNDING.VENMO } to be remembered`);
+    }
+});
+
 test('should successfully remember multiple funding sources in the cookie', () => {
     const req = getMockReq();
     const res = getMockRes();
@@ -120,3 +137,55 @@ test('should not detect a remembered funding source in the request when the cook
     }
 });
 
+test('should remember a funding source not past its expiry time', () => {
+    const req = getMockReq();
+    const res = getMockRes();
+
+    rememberFunding(req, res, [ FUNDING.ITAU ]);
+
+    const now = Date.now;
+    // $FlowFixMe
+    Date.now = () => {
+        return now() + (1 * 30 * 24 * 60 * 60 * 1000);
+    };
+
+    const newReq = getMockReq({
+        cookies: {
+            js_sdk: res.cookies.js_sdk
+        }
+    });
+
+    if (!isFundingRemembered(newReq, FUNDING.ITAU)) {
+        throw new Error(`Expected ${ FUNDING.ITAU } to be remembered`);
+    }
+
+    // $FlowFixMe
+    Date.now = now;
+});
+
+
+test('should not remember a funding source past its expiry time', () => {
+    const req = getMockReq();
+    const res = getMockRes();
+
+    rememberFunding(req, res, [ FUNDING.ITAU ]);
+
+    const now = Date.now;
+    // $FlowFixMe
+    Date.now = () => {
+        return now() + (3 * 30 * 24 * 60 * 60 * 1000);
+    };
+
+    const newReq = getMockReq({
+        cookies: {
+            js_sdk: res.cookies.js_sdk
+        }
+    });
+
+    if (isFundingRemembered(newReq, FUNDING.ITAU)) {
+        throw new Error(`Expected ${ FUNDING.ITAU } to not be remembered`);
+    }
+
+    // $FlowFixMe
+    Date.now = now;
+});

@@ -26,3 +26,7 @@ export function buildCSP(obj : { [string] : string }) : string {
         return `${ key } ${ obj[key] };`;
     }).join('');
 }
+
+export function getTimestamp() : number {
+    return Math.floor(Date.now() / 1000) - 1564500000;
+}
