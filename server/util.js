@@ -27,6 +27,10 @@ export function buildCSP(obj : { [string] : string }) : string {
     }).join('');
 }
 
+export function normalizeTimestamp(timestamp : number) : number {
+    return Math.floor(timestamp / 1000) - 1564500000;
+}
+
 export function getTimestamp() : number {
-    return Math.floor(Date.now() / 1000) - 1564500000;
+    return normalizeTimestamp(Date.now());
 }

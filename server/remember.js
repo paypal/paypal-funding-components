@@ -6,7 +6,7 @@ import { FUNDING } from '@paypal/sdk-constants';
 import type { ExpressRequest, ExpressResponse } from './types';
 import { QUERY_PARAM, HTTP_RESPONSE_HEADER } from './constants';
 import { getSDKCookie, writeSDKCookie, type CookiesType } from './cookie';
-import { getNonce, getQuery, buildCSP, getTimestamp } from './util';
+import { getNonce, getQuery, buildCSP, getTimestamp, normalizeTimestamp } from './util';
 import { COOKIE_SETTINGS } from './config';
 
 export function isFundingRemembered(req : ExpressRequest, fundingSource : $Values<typeof FUNDING>, opts? : { cookies? : CookiesType } = {}) : boolean {
@@ -20,7 +20,7 @@ export function isFundingRemembered(req : ExpressRequest, fundingSource : $Value
     const sdkCookie = getSDKCookie(req, cookies);
     const funding = sdkCookie.funding || {};
     const fundingConfig = funding[fundingSource] || {};
-    
+
     if (fundingConfig.expiry && fundingConfig.expiry < getTimestamp()) {
         return false;
     }
@@ -28,7 +28,14 @@ export function isFundingRemembered(req : ExpressRequest, fundingSource : $Value
     return Boolean(fundingConfig.remembered);
 }
 
-export function rememberFunding(req : ExpressRequest, res : ExpressResponse, fundingSources : $ReadOnlyArray<$Values<typeof FUNDING>>) {
+// eslint-disable-next-line flowtype/require-exact-type
+type RememberFundingOptions = {
+    expiry? : number
+};
+
+export function rememberFunding(req : ExpressRequest, res : ExpressResponse, fundingSources : $ReadOnlyArray<$Values<typeof FUNDING>>, opts? : RememberFundingOptions = {}) {
+    const { expiry } = opts;
+
     const sdkCookie = getSDKCookie(req);
     const funding = sdkCookie.funding = sdkCookie.funding || {};
 
@@ -41,22 +48,13 @@ export function rememberFunding(req : ExpressRequest, res : ExpressResponse, fun
             res.cookie(cookieSettings.legacyKey, '1');
         }
 
-        if (cookieSettings.expiry) {
-            fundingConfig.expiry = (getTimestamp() + cookieSettings.expiry);
+        if (expiry) {
+            fundingConfig.expiry = (getTimestamp() + normalizeTimestamp(Date.now() + (expiry * 1000)));
         }
     }
 
     writeSDKCookie(res, sdkCookie);
 }
-
-type RememberFundingOptions = {|
-    allowedClients : {
-        [string] : {|
-            allowedFunding : $ReadOnlyArray<$Values<typeof FUNDING>>,
-            allowedDomains : $ReadOnlyArray<string>
-        |}
-    }
-|};
 
 type RememberFundingMiddleware = (ExpressRequest, ExpressResponse) => void | ExpressResponse;
 
@@ -82,13 +80,23 @@ function setSecurityHeaders(res : ExpressResponse, { nonce, domain } : { nonce :
     res.setHeader(HTTP_RESPONSE_HEADER.ACCESS_CONTROL_ALLOW_ORIGIN, domain);
 }
 
-export function rememberFundingIframe({ allowedClients = {} } : RememberFundingOptions) : RememberFundingMiddleware {
+type RememberFundingIframeOptions = {|
+    allowedClients : {
+        [string] : {|
+            allowedFunding : $ReadOnlyArray<$Values<typeof FUNDING>>,
+            allowedDomains : $ReadOnlyArray<string>
+        |}
+    }
+|};
+
+export function rememberFundingIframe({ allowedClients = {} } : RememberFundingIframeOptions) : RememberFundingMiddleware {
     return (req, res) => {
         const {
             [ QUERY_PARAM.DOMAIN ]:          domain,
             [ QUERY_PARAM.FUNDING_SOURCES ]: commaSeparatedFundingSources,
             [ QUERY_PARAM.SDK_META ]:        sdkMeta,
-            [ QUERY_PARAM.CLIENT_ID ]:       clientID
+            [ QUERY_PARAM.CLIENT_ID ]:       clientID,
+            [ QUERY_PARAM.EXPIRY ]:          expiryTime
         } = getQuery(req);
 
         if (!commaSeparatedFundingSources) {
@@ -105,6 +113,15 @@ export function rememberFundingIframe({ allowedClients = {} } : RememberFundingO
 
         if (!domain || !domain.match(/^https?:\/\/[a-zA-Z_0-9.-]+$/)) {
             return res.status(400).send(`Expected ${ QUERY_PARAM.DOMAIN } query param`);
+        }
+
+        if (expiryTime && !expiryTime.match(/^\d+$/)) {
+            return res.status(400).send(`Expected ${ QUERY_PARAM.EXPIRY } query param to be a number`);
+        }
+
+        let expiry;
+        if (expiryTime) {
+            expiry = parseInt(expiryTime, 10);
         }
 
         const clientConfig = allowedClients[clientID];
@@ -139,7 +156,7 @@ export function rememberFundingIframe({ allowedClients = {} } : RememberFundingO
             return res.status(400).send(`Invalid sdk meta: ${ sdkMeta.toString() }`);
         }
 
-        rememberFunding(req, res, fundingSources);
+        rememberFunding(req, res, fundingSources, { expiry });
 
         const nonce = getNonce();
         const { getSDKLoader } = meta;
@@ -152,7 +169,7 @@ export function rememberFundingIframe({ allowedClients = {} } : RememberFundingO
                 <link rel="icon" href="data:;base64,=">
                 ${ getSDKLoader({ nonce }) }
                 <script nonce="${ nonce }">
-                    paypal.rememberFunding(${ JSON.stringify(fundingSources) });
+                    paypal.rememberFunding(${ JSON.stringify(fundingSources) }, ${ JSON.stringify({ expiry }) });
                 </script>
             </head>
         `);

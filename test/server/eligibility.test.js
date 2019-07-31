@@ -141,7 +141,9 @@ test('should remember a funding source not past its expiry time', () => {
     const req = getMockReq();
     const res = getMockRes();
 
-    rememberFunding(req, res, [ FUNDING.ITAU ]);
+    rememberFunding(req, res, [ FUNDING.ITAU ], {
+        expiry: 2 * 30 * 24 * 60 * 60
+    });
 
     const now = Date.now;
     // $FlowFixMe
@@ -168,7 +170,9 @@ test('should not remember a funding source past its expiry time', () => {
     const req = getMockReq();
     const res = getMockRes();
 
-    rememberFunding(req, res, [ FUNDING.ITAU ]);
+    rememberFunding(req, res, [ FUNDING.ITAU ], {
+        expiry: 2 * 30 * 24 * 60 * 60
+    });
 
     const now = Date.now;
     // $FlowFixMe

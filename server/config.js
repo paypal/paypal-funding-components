@@ -21,8 +21,5 @@ export const COOKIE_SETTINGS : CookieSettings = {
         legacyKey:   'pwv',
         legacyRead:  true,
         legacyWrite: true
-    },
-    [ FUNDING.ITAU ]: {
-        expiry: 2 * 30 * 24 * 60 * 60
     }
 };

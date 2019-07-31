@@ -8,7 +8,14 @@ import { getDomain } from 'cross-domain-utils/src';
 import { REMEMBER_FUNDING_URI } from './config';
 import { QUERY_PARAM } from './constants';
 
-function dropRememberFundingFrame(fundingSources : $ReadOnlyArray<$Values<typeof FUNDING>>) {
+// eslint-disable-next-line flowtype/require-exact-type
+type RememberedFundingFrameOpts = {
+    expiry? : number
+};
+
+function dropRememberFundingFrame(fundingSources : $ReadOnlyArray<$Values<typeof FUNDING>>, opts? : RememberedFundingFrameOpts = {}) {
+    const { expiry } = opts;
+
     const frame = document.createElement('iframe');
     frame.style.display = 'none';
     frame.setAttribute('sandbox', 'allow-scripts');
@@ -17,7 +24,8 @@ function dropRememberFundingFrame(fundingSources : $ReadOnlyArray<$Values<typeof
             [ QUERY_PARAM.DOMAIN ]:          getDomain(),
             [ QUERY_PARAM.CLIENT_ID ]:       getClientID(),
             [ QUERY_PARAM.SDK_META ]:        getSDKMeta(),
-            [ QUERY_PARAM.FUNDING_SOURCES ]: fundingSources.join(',')
+            [ QUERY_PARAM.FUNDING_SOURCES ]: fundingSources.join(','),
+            [ QUERY_PARAM.EXPIRY ]:          (expiry || '').toString()
         }
     }));
 
@@ -31,7 +39,8 @@ function dropRememberFundingFrame(fundingSources : $ReadOnlyArray<$Values<typeof
 }
 
 type RememberFundingOpts = {|
-    cookie : boolean
+    cookie? : boolean,
+    expiry? : number
 |};
 
 const getDefaultRememberFundingOpts = () : RememberFundingOpts => {
@@ -41,7 +50,7 @@ const getDefaultRememberFundingOpts = () : RememberFundingOpts => {
 
 export function rememberFunding(fundingSources : $ReadOnlyArray<$Values<typeof FUNDING>>, opts? : RememberFundingOpts = getDefaultRememberFundingOpts()) {
     const validFunding = values(FUNDING);
-    const { cookie = true } = opts;
+    const { cookie = true, expiry } = opts;
 
     if (!fundingSources || !fundingSources.length) {
         throw new Error(`Pass array of funding sources`);
@@ -54,14 +63,17 @@ export function rememberFunding(fundingSources : $ReadOnlyArray<$Values<typeof F
     }
 
     if (cookie && !isPayPalDomain()) {
-        dropRememberFundingFrame(fundingSources);
+        dropRememberFundingFrame(fundingSources, { expiry });
     }
 
     getStorageState(storage => {
-        storage.rememberedFunding = storage.rememberedFunding || [];
+        storage.funding = storage.fundingConfig || {};
         for (const fundingSource of fundingSources) {
-            if (storage.rememberedFunding.indexOf(fundingSource) === -1) {
-                storage.rememberedFunding.push(fundingSource);
+            const fundingStorage = storage.funding[fundingSource] = storage.funding[fundingSource] || {};
+            fundingStorage.remembered = true;
+
+            if (expiry) {
+                fundingStorage.expiry = Date.now() + (expiry * 1000);
             }
         }
     });
@@ -69,6 +81,20 @@ export function rememberFunding(fundingSources : $ReadOnlyArray<$Values<typeof F
 
 export function getRememberedFunding() : $ReadOnlyArray<$Values<typeof FUNDING>> {
     return getStorageState(storage => {
-        return storage.rememberedFunding || [];
+        storage.funding = storage.funding || {};
+        // $FlowFixMe
+        return Object.keys(storage.funding).filter(fundingSource => {
+            const fundingStorage = storage.funding[fundingSource];
+
+            if (fundingStorage.expiry && (Date.now() > fundingStorage.expiry)) {
+                return false;
+            }
+
+            if (storage.funding[fundingSource].remembered) {
+                return true;
+            }
+            
+            return false;
+        });
     });
 }

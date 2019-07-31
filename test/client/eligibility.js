@@ -5,7 +5,7 @@ import { parseQuery } from 'belter/src';
 import { getDomain } from 'cross-domain-utils/src';
 import { getClientID, getSDKMeta } from '@paypal/sdk-client/src';
 
-import { rememberFunding } from '../../src';
+import { rememberFunding, getRememberedFunding } from '../../src';
 
 describe(`eligibility cases`, () => {
     beforeEach(() => {
@@ -114,5 +114,51 @@ describe(`eligibility cases`, () => {
         if (!error) {
             throw new Error(`Expected error to be thrown`);
         }
+    });
+
+    it('should successfully remember a funding source locally', () => {
+        rememberFunding([ FUNDING.ITAU ]);
+
+        if (getRememberedFunding().indexOf(FUNDING.ITAU) === -1) {
+            throw new Error(`Expected ${ FUNDING.ITAU } to be remembered`);
+        }
+    });
+
+    it('should successfully remember a funding source locally with an unpassed expiry time', () => {
+        rememberFunding([ FUNDING.ITAU ], {
+            expiry: 2 * 30 * 24 * 60 * 60
+        });
+
+        const now = Date.now;
+        // $FlowFixMe
+        Date.now = () => {
+            return now() + (1 * 30 * 24 * 60 * 60 * 1000);
+        };
+
+        if (getRememberedFunding().indexOf(FUNDING.ITAU) === -1) {
+            throw new Error(`Expected ${ FUNDING.ITAU } to be remembered`);
+        }
+
+        // $FlowFixMe
+        Date.now = now;
+    });
+
+    it('should not remember a funding source locally with an passed expiry time', () => {
+        rememberFunding([ FUNDING.ITAU ], {
+            expiry: 2 * 30 * 24 * 60 * 60
+        });
+
+        const now = Date.now;
+        // $FlowFixMe
+        Date.now = () => {
+            return now() + (3 * 30 * 24 * 60 * 60 * 1000);
+        };
+
+        if (getRememberedFunding().indexOf(FUNDING.ITAU) !== -1) {
+            throw new Error(`Expected ${ FUNDING.ITAU } to not be remembered`);
+        }
+
+        // $FlowFixMe
+        Date.now = now;
     });
 });
