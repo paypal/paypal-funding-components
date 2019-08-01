@@ -11,6 +11,7 @@ export const QUERY_PARAM = {
 };
 
 export const HTTP_RESPONSE_HEADER = {
+    X_CONTENT_SECURITY_POLICY:   'x-content-security-policy',
     CONTENT_SECURITY_POLICY:     'content-security-policy',
     ACCESS_CONTROL_ALLOW_ORIGIN: 'access-control-allow-origin'
 };

@@ -3,9 +3,12 @@
 export function getMockReq(overrides? : Object) : Object {
     const cookies = {};
     const query = {};
+    const headers = {};
     const req = {
         query,
         cookies,
+        headers,
+        get: (key) => headers[key],
         ...overrides
     };
     return req;

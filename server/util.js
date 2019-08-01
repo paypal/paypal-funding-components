@@ -34,3 +34,8 @@ export function normalizeTimestamp(timestamp : number) : number {
 export function getTimestamp() : number {
     return normalizeTimestamp(Date.now());
 }
+
+export function isIE(req : ExpressRequest) : boolean {
+    const userAgent = req.get('user-agent');
+    return Boolean(userAgent && (/Edge|MSIE|rv:10|rv:11/i).test(userAgent));
+}

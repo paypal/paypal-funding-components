@@ -6,7 +6,7 @@ import { FUNDING } from '@paypal/sdk-constants';
 import type { ExpressRequest, ExpressResponse } from './types';
 import { QUERY_PARAM, HTTP_RESPONSE_HEADER } from './constants';
 import { getSDKCookie, writeSDKCookie, type CookiesType } from './cookie';
-import { getNonce, getQuery, buildCSP, getTimestamp, normalizeTimestamp } from './util';
+import { getNonce, getQuery, buildCSP, getTimestamp, normalizeTimestamp, isIE } from './util';
 import { COOKIE_SETTINGS } from './config';
 
 export function isFundingRemembered(req : ExpressRequest, fundingSource : $Values<typeof FUNDING>, opts? : { cookies? : CookiesType } = {}) : boolean {
@@ -64,8 +64,12 @@ function parseFundingSources(commaSeparatedFundingSources) : $ReadOnlyArray<$Val
     return fundingSources;
 }
 
-function setSecurityHeaders(res : ExpressResponse, { nonce, domain } : { nonce : string, domain : string }) {
-    res.setHeader(HTTP_RESPONSE_HEADER.CONTENT_SECURITY_POLICY, buildCSP({
+function setSecurityHeaders(req : ExpressRequest, res : ExpressResponse, { nonce, domain } : { nonce : string, domain : string }) {
+    const cspHeader = isIE(req)
+        ? HTTP_RESPONSE_HEADER.X_CONTENT_SECURITY_POLICY
+        : HTTP_RESPONSE_HEADER.CONTENT_SECURITY_POLICY;
+
+    res.setHeader(cspHeader, buildCSP({
         'script-src':      `'self' https://*.paypal.com:* 'nonce-${ nonce }'`,
         'connect-src':     `'self' https://*.paypal.com:*`,
         'frame-ancestors': `${ domain }`,
@@ -161,7 +165,7 @@ export function rememberFundingIframe({ allowedClients = {} } : RememberFundingI
         const nonce = getNonce();
         const { getSDKLoader } = meta;
 
-        setSecurityHeaders(res, { domain, nonce });
+        setSecurityHeaders(req, res, { domain, nonce });
 
         res.status(200).send(`
             <!DOCTYPE html>
