@@ -6,7 +6,7 @@ import { FUNDING } from '@paypal/sdk-constants';
 import type { ExpressRequest, ExpressResponse } from './types';
 import { QUERY_PARAM, HTTP_RESPONSE_HEADER } from './constants';
 import { getSDKCookie, writeSDKCookie, type CookiesType } from './cookie';
-import { getNonce, getQuery, buildCSP, getTimestamp, normalizeTimestamp, isIE } from './util';
+import { getNonce, getQuery, buildCSP, getTimestamp, isIE } from './util';
 import { COOKIE_SETTINGS } from './config';
 
 export function isFundingRemembered(req : ExpressRequest, fundingSource : $Values<typeof FUNDING>, opts? : { cookies? : CookiesType } = {}) : boolean {
@@ -49,7 +49,7 @@ export function rememberFunding(req : ExpressRequest, res : ExpressResponse, fun
         }
 
         if (expiry) {
-            fundingConfig.expiry = (getTimestamp() + normalizeTimestamp(Date.now() + (expiry * 1000)));
+            fundingConfig.expiry = getTimestamp() + expiry;
         }
     }
 
@@ -59,9 +59,7 @@ export function rememberFunding(req : ExpressRequest, res : ExpressResponse, fun
 type RememberFundingMiddleware = (ExpressRequest, ExpressResponse) => void | ExpressResponse;
 
 function parseFundingSources(commaSeparatedFundingSources) : $ReadOnlyArray<$Values<typeof FUNDING>> {
-    const fundingSources = commaSeparatedFundingSources.split(',');
-    // $FlowFixMe
-    return fundingSources;
+    return commaSeparatedFundingSources.split(',');
 }
 
 function setSecurityHeaders(req : ExpressRequest, res : ExpressResponse, { nonce, domain } : { nonce : string, domain : string }) {

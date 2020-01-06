@@ -166,7 +166,7 @@ test('should remember a funding source not past its expiry time', () => {
 });
 
 
-test('should not remember a funding source past its expiry time', () => {
+test.only('should not remember a funding source past its expiry time', () => {
     const req = getMockReq();
     const res = getMockRes();
 
@@ -177,6 +177,9 @@ test('should not remember a funding source past its expiry time', () => {
     const now = Date.now;
     // $FlowFixMe
     Date.now = () => {
+        // $FlowFixMe
+        Date.now = now;
+
         return now() + (3 * 30 * 24 * 60 * 60 * 1000);
     };
 
@@ -189,7 +192,4 @@ test('should not remember a funding source past its expiry time', () => {
     if (isFundingRemembered(newReq, FUNDING.ITAU)) {
         throw new Error(`Expected ${ FUNDING.ITAU } to not be remembered`);
     }
-
-    // $FlowFixMe
-    Date.now = now;
 });

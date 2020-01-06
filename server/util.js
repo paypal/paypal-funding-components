@@ -27,8 +27,10 @@ export function buildCSP(obj : { [string] : string }) : string {
     }).join('');
 }
 
+const TIME_OFFSET = 1564500000;
+
 export function normalizeTimestamp(timestamp : number) : number {
-    return Math.floor(timestamp / 1000) - 1564500000;
+    return Math.floor(timestamp / 1000) - TIME_OFFSET;
 }
 
 export function getTimestamp() : number {
