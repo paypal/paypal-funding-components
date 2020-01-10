@@ -1,11 +1,11 @@
 /* @flow */
 
-import { getClientID, getSDKMeta, getPayPalDomain, isPayPalDomain, getStorageState } from '@paypal/sdk-client/src';
+import { getClientID, getSDKMeta, getPayPalDomain, isPayPalDomain, getStorageState, getFundingEligibility } from '@paypal/sdk-client/src';
 import { FUNDING } from '@paypal/sdk-constants/src';
 import { values, extendUrl } from 'belter/src';
 import { getDomain } from 'cross-domain-utils/src';
 
-import { REMEMBER_FUNDING_URI } from './config';
+import { REMEMBER_FUNDING_URI, SUPPORTED_FUNDING_SOURCES } from './config';
 import { QUERY_PARAM } from './constants';
 
 // eslint-disable-next-line flowtype/require-exact-type
@@ -97,4 +97,18 @@ export function getRememberedFunding() : $ReadOnlyArray<$Values<typeof FUNDING>>
             return false;
         });
     });
+}
+
+export function getFundingSources() : $ReadOnlyArray<$Values<typeof FUNDING>> {
+    return SUPPORTED_FUNDING_SOURCES;
+}
+
+export function isFundingEligible(fundingSource : $Values<typeof FUNDING>) : boolean {
+    if (SUPPORTED_FUNDING_SOURCES.indexOf(fundingSource) === -1) {
+        throw new Error(`Funding source ${ fundingSource } is not supported`);
+    }
+
+    const fundingEligibility = getFundingEligibility();
+
+    return Boolean(fundingEligibility[fundingSource] && fundingEligibility[fundingSource].eligible);
 }

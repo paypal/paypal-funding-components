@@ -9,5 +9,11 @@ export const testGlobals = {
 
     __VERSION__:        '1.0.45',
     __CORRELATION_ID__: 'abc123',
-    __NAMESPACE__:      'paypaltest'
+    __NAMESPACE__:      'paypal',
+
+    __FUNDING_ELIGIBILITY__: {
+        paypal: {
+            eligible: true
+        }
+    }
 };

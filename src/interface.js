@@ -1,3 +1,3 @@
 /* @flow */
 
-export { rememberFunding } from './eligibility';
+export { rememberFunding, getFundingSources, isFundingEligible } from './eligibility';
