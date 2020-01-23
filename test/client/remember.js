@@ -5,7 +5,7 @@ import { parseQuery } from 'belter/src';
 import { getDomain } from 'cross-domain-utils/src';
 import { getClientID, getSDKMeta } from '@paypal/sdk-client/src';
 
-import { rememberFunding, getRememberedFunding } from '../../src';
+import { rememberFunding, getRememberedFunding, isFundingRemembered } from '../../src';
 
 describe(`remember cases`, () => {
     beforeEach(() => {
@@ -118,6 +118,10 @@ describe(`remember cases`, () => {
 
     it('should successfully remember a funding source locally', () => {
         rememberFunding([ FUNDING.ITAU ]);
+
+        if (!isFundingRemembered(FUNDING.ITAU)) {
+            throw new Error(`Expected venmo to be remembered on client`);
+        }
 
         if (getRememberedFunding().indexOf(FUNDING.ITAU) === -1) {
             throw new Error(`Expected ${ FUNDING.ITAU } to be remembered`);

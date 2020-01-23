@@ -99,6 +99,10 @@ export function getRememberedFunding() : $ReadOnlyArray<$Values<typeof FUNDING>>
     });
 }
 
+export function isFundingRemembered(fundingSource : $Values<typeof FUNDING>) : boolean {
+    return getRememberedFunding().indexOf(fundingSource) !== -1;
+}
+
 export function getFundingSources() : $ReadOnlyArray<$Values<typeof FUNDING>> {
     return SUPPORTED_FUNDING_SOURCES;
 }
