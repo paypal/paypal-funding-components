@@ -1,11 +1,12 @@
 /* @flow */
 
-import { getClientID, getSDKMeta, getPayPalDomain, isPayPalDomain, getStorageState, getFundingEligibility } from '@paypal/sdk-client/src';
+import { getClientID, getSDKMeta, getPayPalDomain, isPayPalDomain, getStorageState,
+    getFundingEligibility, type FundingEligibilityType } from '@paypal/sdk-client/src';
 import { FUNDING } from '@paypal/sdk-constants/src';
-import { values, extendUrl } from 'belter/src';
+import { values, extendUrl, memoize } from 'belter/src';
 import { getDomain } from 'cross-domain-utils/src';
 
-import { REMEMBER_FUNDING_URI, SUPPORTED_FUNDING_SOURCES } from './config';
+import { REMEMBER_FUNDING_URI, SUPPORTED_FUNDING_SOURCES, REMEMBERABLE_FUNDING_SOURCES } from './config';
 import { QUERY_PARAM } from './constants';
 
 // eslint-disable-next-line flowtype/require-exact-type
@@ -79,7 +80,7 @@ export function rememberFunding(fundingSources : $ReadOnlyArray<$Values<typeof F
     });
 }
 
-export function getRememberedFunding() : $ReadOnlyArray<$Values<typeof FUNDING>> {
+export const getRememberedFunding = memoize(() : $ReadOnlyArray<$Values<typeof FUNDING>> => {
     return getStorageState(storage => {
         storage.funding = storage.funding || {};
         // $FlowFixMe
@@ -97,11 +98,38 @@ export function getRememberedFunding() : $ReadOnlyArray<$Values<typeof FUNDING>>
             return false;
         });
     });
-}
+});
 
 export function isFundingRemembered(fundingSource : $Values<typeof FUNDING>) : boolean {
     return getRememberedFunding().indexOf(fundingSource) !== -1;
 }
+
+export const getRefinedFundingEligibility = memoize(() : FundingEligibilityType => {
+    let fundingEligibility = getFundingEligibility();
+
+    for (const fundingSource of REMEMBERABLE_FUNDING_SOURCES) {
+        if (!isFundingRemembered(fundingSource)) {
+            continue;
+        }
+
+        const fundingSourceEligibility = fundingEligibility[fundingSource];
+
+        if (!fundingSourceEligibility) {
+            continue;
+        }
+
+        fundingEligibility = {
+            ...fundingEligibility,
+            [ fundingSource ]: {
+                ...fundingSourceEligibility,
+                eligible:    true,
+                recommended: true
+            }
+        };
+    }
+
+    return fundingEligibility;
+});
 
 export function getFundingSources() : $ReadOnlyArray<$Values<typeof FUNDING>> {
     return SUPPORTED_FUNDING_SOURCES;
@@ -112,7 +140,15 @@ export function isFundingEligible(fundingSource : $Values<typeof FUNDING>) : boo
         throw new Error(`Funding source ${ fundingSource } is not supported`);
     }
 
-    const fundingEligibility = getFundingEligibility();
-
+    const fundingEligibility = getRefinedFundingEligibility();
     return Boolean(fundingEligibility[fundingSource] && fundingEligibility[fundingSource].eligible);
+}
+
+export function isFundingRecommended(fundingSource : $Values<typeof FUNDING>) : boolean {
+    if (SUPPORTED_FUNDING_SOURCES.indexOf(fundingSource) === -1) {
+        throw new Error(`Funding source ${ fundingSource } is not supported`);
+    }
+
+    const fundingEligibility = getRefinedFundingEligibility();
+    return Boolean(fundingEligibility[fundingSource] && fundingEligibility[fundingSource].recommended);
 }

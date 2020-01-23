@@ -28,3 +28,9 @@ export const SUPPORTED_FUNDING_SOURCES : $ReadOnlyArray<$Values<typeof FUNDING>>
     FUNDING.MAXIMA,
     FUNDING.CARD
 ];
+
+export const REMEMBERABLE_FUNDING_SOURCES = [
+    FUNDING.PAYPAL,
+    FUNDING.VENMO,
+    FUNDING.ITAU
+];

@@ -14,6 +14,9 @@ export const testGlobals = {
     __FUNDING_ELIGIBILITY__: {
         paypal: {
             eligible: true
+        },
+        itau: {
+            eligible: false
         }
     }
 };
