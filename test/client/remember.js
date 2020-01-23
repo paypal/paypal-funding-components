@@ -9,9 +9,6 @@ import { rememberFunding, getRememberedFunding, isFundingRemembered, isFundingRe
 
 describe(`remember cases`, () => {
     beforeEach(() => {
-        getRememberedFunding.reset();
-        getRefinedFundingEligibility.reset();
-
         for (const frame of document.querySelectorAll('iframe')) {
             if (frame.parentNode) {
                 frame.parentNode.removeChild(frame);
@@ -129,8 +126,10 @@ describe(`remember cases`, () => {
         if (getRememberedFunding().indexOf(FUNDING.ITAU) === -1) {
             throw new Error(`Expected ${ FUNDING.ITAU } to be remembered`);
         }
+        
+        const itauConfig = getRefinedFundingEligibility()[FUNDING.ITAU];
 
-        if (!getRefinedFundingEligibility()[FUNDING.ITAU].recommended) {
+        if (!itauConfig || !itauConfig.recommended) {
             throw new Error(`Expected Itau to be recommended in fundingEligibility`);
         }
 

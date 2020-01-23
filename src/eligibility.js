@@ -3,7 +3,7 @@
 import { getClientID, getSDKMeta, getPayPalDomain, isPayPalDomain, getStorageState,
     getFundingEligibility, type FundingEligibilityType } from '@paypal/sdk-client/src';
 import { FUNDING } from '@paypal/sdk-constants/src';
-import { values, extendUrl, memoize } from 'belter/src';
+import { values, extendUrl } from 'belter/src';
 import { getDomain } from 'cross-domain-utils/src';
 
 import { REMEMBER_FUNDING_URI, SUPPORTED_FUNDING_SOURCES, REMEMBERABLE_FUNDING_SOURCES } from './config';
@@ -80,7 +80,7 @@ export function rememberFunding(fundingSources : $ReadOnlyArray<$Values<typeof F
     });
 }
 
-export const getRememberedFunding = memoize(() : $ReadOnlyArray<$Values<typeof FUNDING>> => {
+export const getRememberedFunding = () : $ReadOnlyArray<$Values<typeof FUNDING>> => {
     return getStorageState(storage => {
         storage.funding = storage.funding || {};
         // $FlowFixMe
@@ -98,13 +98,13 @@ export const getRememberedFunding = memoize(() : $ReadOnlyArray<$Values<typeof F
             return false;
         });
     });
-});
+};
 
 export function isFundingRemembered(fundingSource : $Values<typeof FUNDING>) : boolean {
     return getRememberedFunding().indexOf(fundingSource) !== -1;
 }
 
-export const getRefinedFundingEligibility = memoize(() : FundingEligibilityType => {
+export const getRefinedFundingEligibility = () : FundingEligibilityType => {
     let fundingEligibility = getFundingEligibility();
 
     for (const fundingSource of REMEMBERABLE_FUNDING_SOURCES) {
@@ -129,7 +129,7 @@ export const getRefinedFundingEligibility = memoize(() : FundingEligibilityType 
     }
 
     return fundingEligibility;
-});
+};
 
 export function getFundingSources() : $ReadOnlyArray<$Values<typeof FUNDING>> {
     return SUPPORTED_FUNDING_SOURCES;
