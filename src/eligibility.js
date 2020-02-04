@@ -128,6 +128,7 @@ export const getRefinedFundingEligibility = () : FundingEligibilityType => {
         };
     }
 
+    // $FlowFixMe
     return fundingEligibility;
 };
 
