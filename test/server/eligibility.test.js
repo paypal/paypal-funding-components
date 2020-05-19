@@ -166,7 +166,7 @@ test('should remember a funding source not past its expiry time', () => {
 });
 
 
-test.only('should not remember a funding source past its expiry time', () => {
+test('should not remember a funding source past its expiry time', () => {
     const req = getMockReq();
     const res = getMockRes();
 

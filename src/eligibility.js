@@ -137,7 +137,7 @@ export function getFundingSources() : $ReadOnlyArray<$Values<typeof FUNDING>> {
 }
 
 export function isFundingEligible(fundingSource : $Values<typeof FUNDING>) : boolean {
-    if (SUPPORTED_FUNDING_SOURCES.indexOf(fundingSource) === -1) {
+    if (values(FUNDING).indexOf(fundingSource) === -1) {
         throw new Error(`Funding source ${ fundingSource } is not supported`);
     }
 
@@ -146,7 +146,7 @@ export function isFundingEligible(fundingSource : $Values<typeof FUNDING>) : boo
 }
 
 export function isFundingRecommended(fundingSource : $Values<typeof FUNDING>) : boolean {
-    if (SUPPORTED_FUNDING_SOURCES.indexOf(fundingSource) === -1) {
+    if (values(FUNDING).indexOf(fundingSource) === -1) {
         throw new Error(`Funding source ${ fundingSource } is not supported`);
     }
 

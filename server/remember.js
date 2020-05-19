@@ -9,7 +9,16 @@ import { getSDKCookie, writeSDKCookie, type CookiesType } from './cookie';
 import { getNonce, getQuery, buildCSP, getTimestamp, isIE } from './util';
 import { COOKIE_SETTINGS } from './config';
 
-export function isFundingRemembered(req : ExpressRequest, fundingSource : $Values<typeof FUNDING>, opts? : { cookies? : CookiesType } = {}) : boolean {
+type IsFundingRememberedOptions = {|
+    cookies? : CookiesType
+|};
+
+const getDefaultIsFundingRememberedOptions = () : IsFundingRememberedOptions => {
+    // $FlowFixMe
+    return {};
+};
+
+export function isFundingRemembered(req : ExpressRequest, fundingSource : $Values<typeof FUNDING>, opts? : IsFundingRememberedOptions = getDefaultIsFundingRememberedOptions()) : boolean {
     const cookies = opts.cookies || req.cookies || {};
     const cookieSettings = COOKIE_SETTINGS[fundingSource] || {};
 
@@ -62,7 +71,7 @@ function parseFundingSources(commaSeparatedFundingSources) : $ReadOnlyArray<$Val
     return commaSeparatedFundingSources.split(',');
 }
 
-function setSecurityHeaders(req : ExpressRequest, res : ExpressResponse, { nonce, domain } : { nonce : string, domain : string }) {
+function setSecurityHeaders(req : ExpressRequest, res : ExpressResponse, { nonce, domain } : {| nonce : string, domain : string |}) {
     const cspHeader = isIE(req)
         ? HTTP_RESPONSE_HEADER.X_CONTENT_SECURITY_POLICY
         : HTTP_RESPONSE_HEADER.CONTENT_SECURITY_POLICY;
