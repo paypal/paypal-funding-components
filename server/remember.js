@@ -9,7 +9,16 @@ import { getSDKCookie, writeSDKCookie, type CookiesType } from './cookie';
 import { getNonce, getQuery, buildCSP, getTimestamp, isIE } from './util';
 import { COOKIE_SETTINGS } from './config';
 
-export function isFundingRemembered(req : ExpressRequest, fundingSource : $Values<typeof FUNDING>, opts? : {| cookies? : CookiesType |} = {}) : boolean {
+type IsFundingRememberedOptions = {|
+    cookies? : CookiesType
+|};
+
+const getDefaultIsFundingRememberedOptions = () : IsFundingRememberedOptions => {
+    // $FlowFixMe
+    return {};
+};
+
+export function isFundingRemembered(req : ExpressRequest, fundingSource : $Values<typeof FUNDING>, opts? : IsFundingRememberedOptions = getDefaultIsFundingRememberedOptions()) : boolean {
     const cookies = opts.cookies || req.cookies || {};
     const cookieSettings = COOKIE_SETTINGS[fundingSource] || {};
 
