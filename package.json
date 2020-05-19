@@ -1,6 +1,6 @@
 {
   "name": "@paypal/funding-components",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "description": "PayPal Funding Components.",
   "main": "index.js",
   "scripts": {
