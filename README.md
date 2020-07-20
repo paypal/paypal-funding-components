@@ -1,6 +1,10 @@
 PayPal Funding Components
 -------------------------
 
+[![npm version](https://img.shields.io/npm/v/@paypal/funding-components.svg?style=flat-square)](https://www.npmjs.com/package/@paypal/funding-components) [![build status](https://img.shields.io/travis/paypal/paypal-funding-components/master.svg?style=flat-square)](https://travis-ci.org/paypal/paypal-funding-components)
+
+[![dependencies Status](https://david-dm.org/paypal/paypal-funding-components/status.svg)](https://david-dm.org/paypal/paypal-funding-components) [![devDependencies Status](https://david-dm.org/paypal/paypal-funding-components/dev-status.svg)](https://david-dm.org/paypal/paypal-funding-components?type=dev)
+
 PayPal JavaScript SDK module to deal with funding sources and eligibility.
 
 ## Remember a funding source from the client-side
