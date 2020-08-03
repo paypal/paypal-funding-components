@@ -120,6 +120,7 @@ export const getRefinedFundingEligibility = () : FundingEligibilityType => {
 
         // $FlowFixMe
         fundingEligibility = {
+            // $FlowFixMe
             ...fundingEligibility,
             // $FlowFixMe
             [ fundingSource ]: {
