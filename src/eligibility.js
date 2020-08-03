@@ -118,8 +118,10 @@ export const getRefinedFundingEligibility = () : FundingEligibilityType => {
             continue;
         }
 
+        // $FlowFixMe
         fundingEligibility = {
             ...fundingEligibility,
+            // $FlowFixMe
             [ fundingSource ]: {
                 ...fundingSourceEligibility,
                 eligible:    true,
