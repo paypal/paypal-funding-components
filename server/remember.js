@@ -6,7 +6,7 @@ import { FUNDING } from '@paypal/sdk-constants';
 import type { ExpressRequest, ExpressResponse } from './types';
 import { QUERY_PARAM, HTTP_RESPONSE_HEADER } from './constants';
 import { getSDKCookie, writeSDKCookie, type CookiesType } from './cookie';
-import { getNonce, getQuery, buildCSP, getTimestamp, isIE } from './util';
+import { getNonce, getQuery, buildCSP, getTimestamp, isIE, safeJSON } from './util';
 import { COOKIE_SETTINGS } from './config';
 
 type IsFundingRememberedOptions = {|
@@ -138,7 +138,7 @@ export function rememberFundingIframe({ allowedClients = {} } : RememberFundingI
         const clientConfig = allowedClients[clientID];
 
         if (!clientConfig) {
-            return res.status(400).send(`Invalid client id: ${ clientID }`);
+            return res.status(400).send(`Invalid client id`);
         }
 
         const { allowedFunding, allowedDomains } = clientConfig;
@@ -147,16 +147,16 @@ export function rememberFundingIframe({ allowedClients = {} } : RememberFundingI
     
         for (const fundingSource of fundingSources) {
             if (validFunding.indexOf(fundingSource) === -1) {
-                return res.status(400).send(`Invalid funding source: ${ fundingSource }`);
+                return res.status(400).send(`Invalid funding source`);
             }
 
             if (allowedFunding.indexOf(fundingSource) === -1) {
-                return res.status(400).send(`Funding source not allowed for client: ${ fundingSource }`);
+                return res.status(400).send(`Funding source not allowed for client`);
             }
         }
 
         if (allowedDomains.indexOf(domain) === -1) {
-            return res.status(400).send(`Domain not allowed for client: ${ domain }`);
+            return res.status(400).send(`Domain not allowed for client`);
         }
 
         let meta;
@@ -164,7 +164,7 @@ export function rememberFundingIframe({ allowedClients = {} } : RememberFundingI
         try {
             meta = unpackSDKMeta(req.query.sdkMeta);
         } catch (err) {
-            return res.status(400).send(`Invalid sdk meta: ${ sdkMeta.toString() }`);
+            return res.status(400).send(`Invalid sdk meta`);
         }
 
         rememberFunding(req, res, fundingSources, { expiry });
@@ -180,7 +180,7 @@ export function rememberFundingIframe({ allowedClients = {} } : RememberFundingI
                 <link rel="icon" href="data:;base64,=">
                 ${ getSDKLoader({ nonce }) }
                 <script nonce="${ nonce }">
-                    paypal.rememberFunding(${ JSON.stringify(fundingSources) }, ${ JSON.stringify({ expiry }) });
+                    paypal.rememberFunding(${ safeJSON(fundingSources) }, ${ safeJSON({ expiry }) });
                 </script>
             </head>
         `);

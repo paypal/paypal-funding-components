@@ -41,3 +41,8 @@ export function isIE(req : ExpressRequest) : boolean {
     const userAgent = req.get('user-agent');
     return Boolean(userAgent && (/Edge|MSIE|rv:10|rv:11/i).test(userAgent));
 }
+
+// eslint-disable-next-line no-unused-vars, flowtype/no-weak-types
+export function safeJSON(...args : $ReadOnlyArray<any>) : string {
+    return JSON.stringify.apply(null, arguments).replace(/</g, '\\u003C').replace(/>/g, '\\u003E');
+}
