@@ -33,6 +33,5 @@ export const SUPPORTED_FUNDING_SOURCES : $ReadOnlyArray<$Values<typeof FUNDING>>
 
 export const REMEMBERABLE_FUNDING_SOURCES = [
     FUNDING.PAYPAL,
-    FUNDING.VENMO,
     FUNDING.ITAU
 ];
