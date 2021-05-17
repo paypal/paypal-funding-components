@@ -28,12 +28,6 @@ export default function configKarma(karma : Object) {
         preprocessors: {
             ...karmaConfig.preprocessors,
             'test/client/**/*.js': [ 'webpack', 'sourcemap' ]
-        },
-
-        coverageReporter: {
-            reporters: [
-                { type: 'lcov' }
-            ]
         }
     });
 }
