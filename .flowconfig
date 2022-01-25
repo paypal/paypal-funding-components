@@ -7,6 +7,7 @@
 .*/node_modules/cross-domain-utils/test
 .*/node_modules/npm
 .*/node_modules/jsonlint
+.*/node_modules/resolve
 .*/dist/module
 .*/flow-typed/npm/express_v4.x.x.js
 [include]
@@ -17,7 +18,3 @@ node_modules/grumbler-scripts/declarations.js
 node_modules/@paypal/sdk-client/src/declarations.js
 [options]
 module.name_mapper='^src\(.*\)$' -> '<PROJECT_ROOT>/src/\1'
-esproposal.export_star_as=enable
-esproposal.decorators=ignore
-[lints]
-deprecated-utility=off

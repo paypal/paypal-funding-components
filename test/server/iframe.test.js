@@ -35,7 +35,7 @@ test('should successfully remember a funding source in the cookie using an ifram
         'sdkMeta':         mockSDKMeta(sdkUrl),
         'domain':          testDomain
     };
-    
+
     middleware(req, res);
 
     if (res._status !== 200) {
@@ -70,6 +70,7 @@ test('should successfully remember a funding source in the cookie using an ifram
         throw new Error(`Expected rememberFunding to be called with fundingSources`);
     }
 
+    // $FlowFixMe[incompatible-type]
     if (fundingSources.length !== 1 || fundingSources[0] !== FUNDING.VENMO) {
         throw new Error(`Expected rememberFunding to be called with ${ FUNDING.VENMO }`);
     }
@@ -109,7 +110,7 @@ test('should successfully remember multiple funding sources in the cookie using 
         'sdkMeta':         mockSDKMeta(sdkUrl),
         'domain':          testDomain
     };
-    
+
     middleware(req, res);
 
     if (res._status !== 200) {
@@ -144,6 +145,7 @@ test('should successfully remember multiple funding sources in the cookie using 
         throw new Error(`Expected rememberFunding to be called with fundingSources`);
     }
 
+    // $FlowFixMe[incompatible-type]
     if (fundingSources.length !== 2 || fundingSources[0] !== FUNDING.VENMO || fundingSources[1] !== FUNDING.ITAU) {
         throw new Error(`Expected rememberFunding to be called with ${ FUNDING.VENMO } and ${ FUNDING.ITAU }`);
     }
@@ -189,7 +191,7 @@ test('should successfully remember a funding source in the cookie using an ifram
         'domain':          testDomain,
         'expiry':          `${ EXPIRY }`
     };
-    
+
     middleware(req, res);
 
     if (res._status !== 200) {
@@ -226,6 +228,7 @@ test('should successfully remember a funding source in the cookie using an ifram
         throw new Error(`Expected rememberFunding to be called with fundingSources`);
     }
 
+    // $FlowFixMe[incompatible-type]
     if (fundingSources.length !== 1 || fundingSources[0] !== FUNDING.ITAU) {
         throw new Error(`Expected rememberFunding to be called with ${ FUNDING.ITAU }`);
     }
@@ -267,7 +270,7 @@ test('should give a 400 error if no client-id passed', () => {
         'sdkMeta':         mockSDKMeta(sdkUrl),
         'domain':          testDomain
     };
-    
+
     middleware(req, res);
 
     if (res._status !== 400) {
@@ -301,7 +304,7 @@ test('should give a 400 error if no funding-sources passed', () => {
         'sdkMeta':         mockSDKMeta(sdkUrl),
         'domain':          testDomain
     };
-    
+
     middleware(req, res);
 
     if (res._status !== 400) {
@@ -334,7 +337,7 @@ test('should give a 400 error if no sdkMeta passed', () => {
         'funding-sources': `${ FUNDING.VENMO }`,
         'domain':          testDomain
     };
-    
+
     middleware(req, res);
 
     if (res._status !== 400) {
@@ -368,7 +371,7 @@ test('should give a 400 error if invalid sdkMeta passed', () => {
         'domain':          testDomain,
         'sdkMeta':         'abc1234'
     };
-    
+
     middleware(req, res);
 
     if (res._status !== 400) {
@@ -402,7 +405,7 @@ test('should give a 400 error if no domain passed', () => {
         'funding-sources': `${ FUNDING.VENMO }`,
         'sdkMeta':         mockSDKMeta(sdkUrl)
     };
-    
+
     middleware(req, res);
 
     if (res._status !== 400) {
@@ -437,7 +440,7 @@ test('should give a 400 error if disallowed client-id passed', () => {
         'sdkMeta':         mockSDKMeta(sdkUrl),
         'domain':          testDomain
     };
-    
+
     middleware(req, res);
 
     if (res._status !== 400) {
@@ -472,7 +475,7 @@ test('should give a 400 error if disallowed domain passed', () => {
         'sdkMeta':         mockSDKMeta(sdkUrl),
         'domain':          testDomain
     };
-    
+
     middleware(req, res);
 
     if (res._status !== 400) {
@@ -507,7 +510,7 @@ test('should give a 400 error if invalid funding source passed', () => {
         'sdkMeta':         mockSDKMeta(sdkUrl),
         'domain':          testDomain
     };
-    
+
     middleware(req, res);
 
     if (res._status !== 400) {
@@ -542,7 +545,7 @@ test('should give a 400 error if disallowed funding-source passed', () => {
         'sdkMeta':         mockSDKMeta(sdkUrl),
         'domain':          testDomain
     };
-    
+
     middleware(req, res);
 
     if (res._status !== 400) {
