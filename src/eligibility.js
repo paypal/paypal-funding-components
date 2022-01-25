@@ -30,6 +30,7 @@ function dropRememberFundingFrame(fundingSources : $ReadOnlyArray<$Values<typeof
         }
     }));
 
+    // eslint-disable-next-line compat/compat
     const container = document.body;
 
     if (!container) {
@@ -94,7 +95,7 @@ export const getRememberedFunding = () : $ReadOnlyArray<$Values<typeof FUNDING>>
             if (storage.funding[fundingSource].remembered) {
                 return true;
             }
-            
+
             return false;
         });
     });
