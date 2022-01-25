@@ -14,7 +14,7 @@ PayPal Funding Components
 [version-badge]: https://img.shields.io/npm/v/@paypal/funding-components.svg?style=flat-square
 [package]: https://www.npmjs.com/package/@paypal/funding-components
 [license-badge]: https://img.shields.io/npm/l/@paypal/funding-components.svg?style=flat-square
-[license]: https://github.com/paypal/paypal-funding-components/blob/master/LICENSE
+[license]: https://github.com/paypal/paypal-funding-components/blob/main/LICENSE
 
 PayPal JavaScript SDK module to deal with funding sources and eligibility.
 
