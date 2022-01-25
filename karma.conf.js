@@ -14,7 +14,7 @@ export default function configKarma(karma : Object) {
 
     karma.set({
         ...karmaConfig,
-        
+
         files: [
             {
                 pattern:  'test/client/paypal.js',
@@ -28,6 +28,15 @@ export default function configKarma(karma : Object) {
         preprocessors: {
             ...karmaConfig.preprocessors,
             'test/client/**/*.js': [ 'webpack', 'sourcemap' ]
+        },
+
+        coverageReporter: {
+            reporters: [
+                {
+                    type: 'lcov',
+                    dir:  'coverage/karma'
+                }
+            ]
         }
     });
 }
