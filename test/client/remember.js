@@ -2,7 +2,7 @@
 
 import { FUNDING } from '@paypal/sdk-constants/src';
 import { parseQuery } from 'belter/src';
-import { getDomain } from 'cross-domain-utils/src';
+import { getDomain } from '@krakenjs/cross-domain-utils/src';
 import { getClientID, getSDKMeta } from '@paypal/sdk-client/src';
 
 import { rememberFunding, getRememberedFunding, isFundingRemembered, isFundingRecommended, getRefinedFundingEligibility } from '../../src';
