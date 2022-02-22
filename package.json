@@ -47,10 +47,10 @@
   "license": "Apache-2.0",
   "readmeFilename": "README.md",
   "dependencies": {
-    "@krakenjs/cross-domain-utils": "^3.0.2",
     "@paypal/sdk-client": "^4.0.162",
     "@paypal/sdk-constants": "^1.0.114",
-    "belter": "^1.0.186"
+    "belter": "^1.0.186",
+    "cross-domain-utils": "^2.0.27"
   },
   "devDependencies": {
     "babel-core": "^7.0.0-bridge.0",
