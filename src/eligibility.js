@@ -3,8 +3,8 @@
 import { getClientID, getSDKMeta, getPayPalDomain, isPayPalDomain, getStorageState,
     getFundingEligibility, type FundingEligibilityType } from '@paypal/sdk-client/src';
 import { FUNDING } from '@paypal/sdk-constants/src';
-import { values, extendUrl } from 'belter/src';
-import { getDomain } from 'cross-domain-utils/src';
+import { values, extendUrl } from '@krakenjs/belter/src';
+import { getDomain } from '@krakenjs/cross-domain-utils/src';
 
 import { REMEMBER_FUNDING_URI, SUPPORTED_FUNDING_SOURCES, REMEMBERABLE_FUNDING_SOURCES } from './config';
 import { QUERY_PARAM } from './constants';
