@@ -56,7 +56,7 @@
     "babel-core": "^7.0.0-bridge.0",
     "cheerio": "^1.0.0-rc.3",
     "flow-bin": "0.155.0",
-    "grumbler-scripts": "^5.0.3",
+    "grumbler-scripts": "^6.0.0",
     "mocha": "^4",
     "sync-browser-mocks": "^2.0.0"
   }
