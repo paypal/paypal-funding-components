@@ -1,6 +1,6 @@
 /* @flow */
 
-import { values } from 'belter/src';
+import { values } from '@krakenjs/belter/src';
 import { FUNDING } from '@paypal/sdk-constants/src';
 
 describe(`eligibility cases`, () => {
