@@ -1,6 +1,4 @@
-PayPal Funding Components
--------------------------
-
+## PayPal Funding Components
 
 [![build status][build-badge]][build]
 [![code coverage][coverage-badge]][coverage]
@@ -23,38 +21,36 @@ PayPal JavaScript SDK module to deal with funding sources and eligibility.
 Note: your client-id and domain must be approved to call this function
 
 ```javascript
-paypal.rememberFunding([ paypal.FUNDING.VENMO ]);
+paypal.rememberFunding([paypal.FUNDING.VENMO]);
 ```
 
 ## Remember a funding source from the server-side
 
 ```javascript
-import { rememberFunding } from '@paypal/funding-components';
-import { FUNDING } from '@paypal/sdk-constants';
+import { rememberFunding } from "@paypal/funding-components";
+import { FUNDING } from "@paypal/sdk-constants";
 
-rememberFunding(req, res, [ FUNDING.VENMO ]);
+rememberFunding(req, res, [FUNDING.VENMO]);
 ```
 
 ## Check a remembered funding source from the server-side
 
 ```javascript
-import { isFundingRemembered } from '@paypal/funding-components';
-import { FUNDING } from '@paypal/sdk-constants';
+import { isFundingRemembered } from "@paypal/funding-components";
+import { FUNDING } from "@paypal/sdk-constants";
 
 if (isFundingRemembered(req, FUNDING.VENMO)) {
-    // ...
+	// ...
 }
 ```
 
 Pass in a custom set of cookies:
 
 ```javascript
-isFundingRemembered(req, FUNDING.VENMO, { cookies })
+isFundingRemembered(req, FUNDING.VENMO, { cookies });
 ```
 
-
-Quick Start
------------
+## Quick Start
 
 #### Installing
 
