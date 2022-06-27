@@ -1,4 +1,4 @@
 /* @flow */
 
-export * from './eligibility';
-export * from './config';
+export * from "./eligibility";
+export * from "./config";

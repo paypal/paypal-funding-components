@@ -18,11 +18,14 @@
     "release:minor": "./publish.sh minor",
     "release:patch": "./publish.sh patch",
     "setup": "npm install && npm run flow-typed",
-    "test": "npm run lint && npm run flow-typed && npm run flow && npm run jest && npm run karma",
+    "format": "prettier --write --ignore-unknown .",
+    "format:check": "prettier --check .",
+    "test": "npm run format:check && npm run lint && npm run flow-typed && npm run flow && npm run jest && npm run karma",
     "webpack": "babel-node --plugins=transform-es2015-modules-commonjs ./node_modules/.bin/webpack --progress",
     "jest": "jest test/server --env=node --no-cache --coverage --collectCoverageFrom='server/' --coverageDirectory='coverage/jest' --verbose --runInBand --silent=false",
     "prepublishOnly": "npm run babel",
-    "postpublish": "rm -rf ./server && git checkout ./server"
+    "postpublish": "rm -rf ./server && git checkout ./server",
+    "prepare": "husky install"
   },
   "files": [
     "dist/",
@@ -58,6 +61,12 @@
     "babel-core": "^7.0.0-bridge.0",
     "cheerio": "^1.0.0-rc.3",
     "flow-bin": "0.155.0",
-    "mocha": "^4"
+    "husky": "^8.0.1",
+    "lint-staged": "^13.0.3",
+    "mocha": "^4",
+    "prettier": "2.7.1"
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
   }
 }
