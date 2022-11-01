@@ -48,7 +48,7 @@
   "readmeFilename": "README.md",
   "dependencies": {
     "@paypal/sdk-client": "^4.0.166",
-    "@paypal/sdk-constants": "^1.0.114",
+    "@paypal/sdk-constants": "^1.0.127",
     "@krakenjs/belter": "^2.0.0",
     "@krakenjs/cross-domain-utils": "^3.0.0"
   },
