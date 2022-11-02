@@ -1,5 +1,5 @@
 /* @flow */
-/* eslint max-lines: off */
+/* eslint max-lines: off, import/no-deprecated: off, import/no-named-as-default-member:off */
 
 import cheerio from 'cheerio';
 import { FUNDING } from '@paypal/sdk-constants';
