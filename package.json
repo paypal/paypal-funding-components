@@ -47,17 +47,20 @@
   "license": "Apache-2.0",
   "readmeFilename": "README.md",
   "dependencies": {
-    "@paypal/sdk-client": "^4.0.166",
-    "@paypal/sdk-constants": "^1.0.127",
     "@krakenjs/belter": "^2.0.0",
-    "@krakenjs/cross-domain-utils": "^3.0.0"
+    "@krakenjs/cross-domain-utils": "^3.0.0",
+    "@paypal/sdk-client": "^4.0.166",
+    "@paypal/sdk-constants": "^1.0.127"
   },
   "devDependencies": {
-    "@krakenjs/grumbler-scripts": "^7.0.0",
+    "@krakenjs/grumbler-scripts": "^8.0.1",
     "@krakenjs/sync-browser-mocks": "^3.0.0",
     "babel-core": "^7.0.0-bridge.0",
     "cheerio": "^1.0.0-rc.3",
+    "cross-env": "^7.0.3",
     "flow-bin": "0.155.0",
+    "flow-typed": "^3.8.0",
+    "jest": "^29.2.2",
     "mocha": "^4"
   }
 }
