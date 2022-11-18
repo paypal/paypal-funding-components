@@ -53,7 +53,7 @@
     "@paypal/sdk-constants": "^1.0.127"
   },
   "devDependencies": {
-    "@krakenjs/grumbler-scripts": "^8.0.1",
+    "@krakenjs/grumbler-scripts": "^8.0.5",
     "@krakenjs/sync-browser-mocks": "^3.0.0",
     "babel-core": "^7.0.0-bridge.0",
     "cheerio": "^1.0.0-rc.3",
