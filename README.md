@@ -7,7 +7,7 @@ PayPal Funding Components
 [![npm version][version-badge]][package]
 [![apache license][license-badge]][license]
 
-[build-badge]: https://img.shields.io/github/workflow/status/paypal/paypal-funding-components/build?logo=github&style=flat-square
+[build-badge]: https://img.shields.io/github/actions/workflow/status/paypal/paypal-funding-components/main.yml?branch=main&logo=github&style=flat-square
 [build]: https://github.com/paypal/paypal-funding-components/actions?query=workflow%3Abuild
 [coverage-badge]: https://img.shields.io/codecov/c/github/paypal/paypal-funding-components.svg?style=flat-square
 [coverage]: https://codecov.io/github/paypal/paypal-funding-components/
