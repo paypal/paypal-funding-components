@@ -50,7 +50,7 @@
     "@krakenjs/belter": "^2.0.0",
     "@krakenjs/cross-domain-utils": "^3.0.0",
     "@paypal/sdk-client": "^4.0.166",
-    "@paypal/sdk-constants": "^1.0.127"
+    "@paypal/sdk-constants": "^1.0.128"
   },
   "devDependencies": {
     "@krakenjs/grumbler-scripts": "^8.0.5",
